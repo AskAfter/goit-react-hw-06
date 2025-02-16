@@ -1,8 +1,13 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contactsSlice.js';
 import s from './ContactForm.module.css';
 
-const ContactForm = ({ initialValues, submit }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.items || []);
+
   const nameRegex =
     /^[a-zA-Zа-яА-ЯіІїЇєЄ]+(([' -][a-zA-Zа-яА-ЯіІїЇєЄ ])?[a-zA-Zа-яА-ЯіІїЇєЄ]*)*$/;
   const validationSchema = Yup.object({
@@ -23,52 +28,66 @@ const ContactForm = ({ initialValues, submit }) => {
     } else if (value.length > 5) {
       value = `${value.slice(0, 3)}-${value.slice(3, 5)}-${value.slice(5, 7)}`;
     }
-    setFieldValue('number', value);
+    setFieldValue('number', value || '');
   };
+
+  const handleSubmit = (values, actions) => {
+    const isContactExist = contacts.some(
+      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+    );
+
+    if (isContactExist) {
+      alert(`${values.name} is already in contacts`);
+      actions.setSubmitting(false);
+      return;
+    }
+
+    dispatch(addContact(values));
+    actions.resetForm();
+  };
+
   return (
-    <div>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={submit}
-        validationSchema={validationSchema}
-      >
-        {({ setFieldValue }) => (
-          <Form className={s.form}>
-            <div className={s.inputGroup}>
-              <label className={s.label}>
-                <span>Name</span>
-                <Field
-                  type="text"
-                  name="name"
-                  placeholder="type name here"
-                  className={s.input}
-                />
-              </label>
-              <ErrorMessage name="name" component="p" className={s.error} />
-            </div>
-            <div className={s.inputGroup}>
-              <label className={s.label}>
-                <span>Number</span>
-                <Field
-                  name="number"
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      type="tel"
-                      placeholder="123-45-67"
-                      className={s.input}
-                      onChange={e => handleNumberChange(e, setFieldValue)}
-                    />
-                  )}
-                />
-              </label>
-              <ErrorMessage name="number" component="p" className={s.error} />
-            </div>
-            <button type="submit">Add contact</button>
-          </Form>
-        )}
-      </Formik>
-    </div>
+    <Formik
+      initialValues={{ name: '', number: '' }}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
+    >
+      {({ setFieldValue }) => (
+        <Form className={s.form}>
+          <div className={s.inputGroup}>
+            <label className={s.label}>
+              <span>Name</span>
+              <Field
+                type="text"
+                name="name"
+                placeholder="Type name here"
+                className={s.input}
+              />
+            </label>
+            <ErrorMessage name="name" component="p" className={s.error} />
+          </div>
+          <div className={s.inputGroup}>
+            <label className={s.label}>
+              <span>Number</span>
+              <Field name="number">
+                {({ field }) => (
+                  <input
+                    {...field}
+                    type="tel"
+                    placeholder="123-45-67"
+                    className={s.input}
+                    onChange={e => handleNumberChange(e, setFieldValue)}
+                    value={field.value || ''}
+                  />
+                )}
+              </Field>
+            </label>
+            <ErrorMessage name="number" component="p" className={s.error} />
+          </div>
+          <button type="submit">Add contact</button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
