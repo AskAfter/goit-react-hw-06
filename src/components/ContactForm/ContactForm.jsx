@@ -42,12 +42,12 @@ const ContactForm = () => {
       actions.setSubmitting(false);
       return;
     }
-    const newObj = {
-      name: values.name,
-      number: values.number,
-      id: crypto.randomUUID(),
-    };
-    dispatch(addContact(newObj));
+    // const newObj = {
+    //   name: values.name,
+    //   number: values.number,
+    //   id: crypto.randomUUID(),
+    // };
+    dispatch(addContact(values));
     actions.resetForm();
   };
 
