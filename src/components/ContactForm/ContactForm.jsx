@@ -33,17 +33,21 @@ const ContactForm = () => {
   };
 
   const handleSubmit = (values, actions) => {
-    const isContactExist = contacts.some(
-      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+    const isNumberExist = contacts.some(
+      contact => contact.number === values.number
     );
 
-    if (isContactExist) {
-      alert(`${values.name} is already in contacts`);
+    if (isNumberExist) {
+      alert(`${values.number} is already in contacts`);
       actions.setSubmitting(false);
       return;
     }
-
-    dispatch(addContact(values));
+    const newObj = {
+      name: values.name,
+      number: values.number,
+      id: crypto.randomUUID(),
+    };
+    dispatch(addContact(newObj));
     actions.resetForm();
   };
 

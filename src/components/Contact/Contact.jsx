@@ -1,7 +1,13 @@
 import { ImPhone, ImUser } from 'react-icons/im';
 import s from './Contact.module.css';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/contactsSlice';
 
 const Contact = ({ name, number, id, onDelete }) => {
+  const dispatch = useDispatch();
+  // const handleDelete = id => {
+  //   dispatch(deleteContact(id));
+  // };
   return (
     <div className={s.contact}>
       <p className={s.text}>
@@ -12,7 +18,7 @@ const Contact = ({ name, number, id, onDelete }) => {
         <ImPhone className={s.icon} />
         {number}
       </p>
-      <button onClick={() => onDelete(id)}>Delete</button>
+      <button onClick={() => dispatch(deleteContact(id))}>Delete</button>
     </div>
   );
 };

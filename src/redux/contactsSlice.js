@@ -10,10 +10,7 @@ const slice = createSlice({
   initialState,
   reducers: {
     addContact: (state, action) => {
-      state.contacts.items = [
-        { id: crypto.randomUUID(), ...action.payload },
-        ...state.contacts.items,
-      ];
+      state.contacts.items.push(action.payload);
     },
     deleteContact: (state, action) => {
       state.contacts.items = state.contacts.items.filter(
