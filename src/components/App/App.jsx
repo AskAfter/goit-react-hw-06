@@ -20,23 +20,18 @@ function App() {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
   return (
     <div className={s.container}>
       <h1 className={s.header}>PhoneBook</h1>
       <ContactForm />
       <SearchBox />
-      {/* {contacts.length > 0 ? (
+      {contacts.length > 0 ? (
         <ContactList />
       ) : (
         <h2 className={s.nothingFound}>
           Nothing found <ImShocked className={s.icon} />
         </h2>
-      )} */}
-      <ContactList></ContactList>
+      )}
     </div>
   );
 }
