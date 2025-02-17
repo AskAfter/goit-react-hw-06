@@ -6,16 +6,17 @@ import s from './ContactForm.module.css';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts?.items || []);
+  const contacts = useSelector(state => state.contacts.items || []);
 
-  const nameRegex =
-    /^[a-zA-Zа-яА-ЯіІїЇєЄ]+(([' -][a-zA-Zа-яА-ЯіІїЇєЄ ])?[a-zA-Zа-яА-ЯіІїЇєЄ]*)*$/;
   const validationSchema = Yup.object({
     name: Yup.string()
       .required('Required field')
       .min(3, 'Too short name')
       .max(50, 'Too long name')
-      .matches(nameRegex, 'Invalid name'),
+      .matches(
+        /^[a-zA-Zа-яА-ЯіІїЇєЄ]+(([' -][a-zA-Zа-яА-ЯіІїЇєЄ ])?[a-zA-Zа-яА-ЯіІїЇєЄ]*)*$/,
+        'Invalid name'
+      ),
     number: Yup.string()
       .required('Required field')
       .matches(/^\d{3}-\d{2}-\d{2}$/, 'Invalid phone number'),

@@ -15,8 +15,13 @@ const slice = createSlice({
         ...state.contacts.items,
       ];
     },
+    deleteContact: (state, action) => {
+      state.contacts.items = state.contacts.items.filter(
+        contact => contact.id !== action.payload
+      );
+    },
   },
 });
 
-export const { addContact } = slice.actions;
+export const { addContact, deleteContact } = slice.actions;
 export const contactFormReducer = slice.reducer;

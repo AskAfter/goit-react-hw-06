@@ -1,55 +1,42 @@
-import { useState, useEffect } from 'react';
 import './App.module.css';
-import initialContacts from '../../contacts.json';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contactsSlice';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import SearchBox from '../SearchBox/SearchBox';
 import s from './App.module.css';
 import { ImShocked } from 'react-icons/im';
+import { useEffect } from 'react';
 
 function App() {
-  // const [contacts, setContacts] = useState(initialContacts);
-  // const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contacts.items || []);
 
-  // const filterContact = contacts.filter(contact =>
-  //   contact.name.toLowerCase().includes(filter.toLowerCase())
-  // );
-  // const deleteContact = contactId => {
-  //   setContacts(contacts =>
-  //     contacts.filter(contact => contact.id !== contactId)
-  //   );
-  // };
+  useEffect(() => {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts) {
+      const parsedContacts = JSON.parse(savedContacts);
+      parsedContacts.forEach(contact => dispatch(addContact(contact)));
+    }
+  }, [dispatch]);
 
-  // useEffect(() => {
-  //   try {
-  //     const contacts = localStorage.getItem('contacts');
-  //     const parsedContacts = JSON.parse(contacts);
-  //     if (parsedContacts) {
-  //       setContacts(parsedContacts);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error reading from localStorage', error);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (contacts !== initialContacts) {
-  //     localStorage.setItem('contacts', JSON.stringify(contacts));
-  //   }
-  // }, [contacts]);
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   return (
     <div className={s.container}>
       <h1 className={s.header}>PhoneBook</h1>
       <ContactForm />
       <SearchBox />
-      {/* {filterContact.length > 0 ? (
-        <ContactList initialContacts={filterContact} onDelete={deleteContact} />
+      {/* {contacts.length > 0 ? (
+        <ContactList />
       ) : (
         <h2 className={s.nothingFound}>
-          Nothing found <ImShocked className={s.icon} />{' '}
+          Nothing found <ImShocked className={s.icon} />
         </h2>
       )} */}
+      <ContactList></ContactList>
     </div>
   );
 }
